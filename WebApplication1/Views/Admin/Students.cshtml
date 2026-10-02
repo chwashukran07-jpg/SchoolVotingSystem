@@ -1,0 +1,98 @@
+@model IEnumerable<VotingSystem.Models.Student>
+
+@{
+    ViewBag.Title = "Voter List";
+    var registered = (HashSet<string>)ViewBag.Registered;
+    int registeredCount = Model.Count(s => registered.Contains(s.StudentNumber));
+}
+
+<h2>Voter List</h2>
+<p class="text-muted">
+    Only students on this list can create a voter account.
+    @Model.Count() student(s) on the list, @registeredCount with an account.
+</p>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-5">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="h5 card-title">Add one student</h3>
+                @using (Html.BeginForm("AddStudent", "Admin"))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-2">
+                        <label class="form-label" for="studentNumber">Student ID</label>
+                        <input type="text" id="studentNumber" name="studentNumber" class="form-control" required="required" maxlength="20" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" for="fullName">Full name</label>
+                        <input type="text" id="fullName" name="fullName" class="form-control" required="required" maxlength="150" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="course">Course (optional)</label>
+                        <input type="text" id="course" name="course" class="form-control" maxlength="100" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add student</button>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="h5 card-title">Import a class list</h3>
+                <p class="small text-muted">
+                    One student per line: <code>Student ID, Full Name, Course</code>.
+                    You can paste rows straight from Excel. Students already on the list are skipped.
+                </p>
+                @using (Html.BeginForm("ImportStudents", "Admin"))
+                {
+                    @Html.AntiForgeryToken()
+                    <textarea name="list" class="form-control mb-3" rows="6" placeholder="2024-0101, Jane Example, BS Computer Science&#10;2024-0102, John Example, BS Information Technology"></textarea>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-striped align-middle">
+    <tr>
+        <th>Student ID</th>
+        <th>Full name</th>
+        <th>Course</th>
+        <th>Account</th>
+        <th></th>
+    </tr>
+@foreach (var s in Model)
+{
+    bool hasAccount = registered.Contains(s.StudentNumber);
+    <tr>
+        <td><code>@s.StudentNumber</code></td>
+        <td>@s.FullName</td>
+        <td>@s.Course</td>
+        <td>
+            @if (hasAccount)
+            {
+                <span class="badge bg-success">Registered</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Not yet</span>
+            }
+        </td>
+        <td class="text-end">
+            @if (!hasAccount)
+            {
+                using (Html.BeginForm("DeleteStudent", "Admin", new { id = s.Id }, FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                }
+            }
+        </td>
+    </tr>
+}
+</table>
+
+@Html.ActionLink("Back to elections", "Index")

@@ -1,0 +1,20 @@
+@using Microsoft.AspNet.Identity
+
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "d-flex align-items-center" }))
+    {
+        @Html.AntiForgeryToken()
+        <span class="navbar-text me-3">
+            @(User.IsInRole("Admin") ? "Admin: " : "Student ID: ")@User.Identity.GetUserName()
+        </span>
+        <button type="submit" class="btn btn-sm btn-outline-light">Log off</button>
+    }
+}
+else
+{
+    <ul class="navbar-nav">
+        <li>@Html.ActionLink("Student login", "Login", "Account", null, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Admin login", "AdminLogin", "Account", null, new { @class = "nav-link" })</li>
+    </ul>
+}

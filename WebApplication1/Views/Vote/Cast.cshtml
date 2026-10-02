@@ -1,0 +1,30 @@
+@model VotingSystem.Models.Election
+
+@{
+    ViewBag.Title = "Vote - " + Model.Title;
+}
+
+<h2>@Model.Title</h2>
+<p>Select one candidate and submit your vote. You can only vote once in this election.</p>
+
+@using (Html.BeginForm("SubmitVote", "Vote"))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("electionId", Model.Id)
+
+    <div class="form-group">
+    @foreach (var c in Model.Candidates)
+    {
+        <div class="radio">
+            <label>
+                <input type="radio" name="candidateId" value="@c.Id" required="required" />
+                @c.Name @(!string.IsNullOrEmpty(c.Party) ? "(" + c.Party + ")" : "")
+            </label>
+        </div>
+    }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cast Vote</button>
+}
+
+@Html.ActionLink("Back to elections", "Index")

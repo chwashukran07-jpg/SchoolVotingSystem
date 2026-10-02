@@ -1,0 +1,42 @@
+@model IEnumerable<VotingSystem.Models.Election>
+
+@{
+    ViewBag.Title = "Manage Elections";
+}
+
+<h2>Manage Elections</h2>
+
+<p>
+    @Html.ActionLink("Create New Election", "CreateElection", null, new { @class = "btn btn-success" })
+    @Html.ActionLink("Manage Voter List", "Students", null, new { @class = "btn btn-outline-dark" })
+</p>
+
+@if (!Model.Any())
+{
+    <p>No elections yet. Create one to get started.</p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>Title</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Active</th>
+            <th></th>
+        </tr>
+    @foreach (var e in Model)
+    {
+        <tr>
+            <td>@e.Title</td>
+            <td>@e.StartDate.ToString("g")</td>
+            <td>@e.EndDate.ToString("g")</td>
+            <td>@(e.IsActive ? "Yes" : "No")</td>
+            <td>
+                @Html.ActionLink("Candidates", "Candidates", new { id = e.Id }, new { @class = "btn btn-sm btn-primary" })
+                @Html.ActionLink("Results", "Results", new { id = e.Id }, new { @class = "btn btn-sm btn-secondary" })
+            </td>
+        </tr>
+    }
+    </table>
+}

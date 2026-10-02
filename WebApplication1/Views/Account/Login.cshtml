@@ -1,0 +1,49 @@
+@model VotingSystem.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Student Login";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title h4">Student Login</h2>
+                <p class="text-muted">Log in with your Student ID to vote.</p>
+
+                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="mb-3">
+                        <label class="form-label" for="UserName">Student ID</label>
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "e.g. 2024-0001", autofocus = "autofocus" })
+                        @Html.ValidationMessageFor(m => m.UserName, "Student ID is required.", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
+                        @Html.LabelFor(m => m.RememberMe, new { @class = "form-check-label" })
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Log in</button>
+                }
+
+                <hr />
+                <p class="mb-1">First time voting? @Html.ActionLink("Create your voter account", "Register")</p>
+                <p class="mb-0 small">Election official? @Html.ActionLink("Admin login", "AdminLogin")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,52 @@
+@model VotingSystem.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Create Voter Account";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title h4">Create Your Voter Account</h2>
+                <p class="text-muted">
+                    Enter your Student ID and choose a password. Your ID must be on the official
+                    voter list, and each Student ID can only have one account.
+                </p>
+
+                @using (Html.BeginForm("Register", "Account"))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.StudentNumber, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.StudentNumber, new { @class = "form-control", placeholder = "e.g. 2024-0001", autofocus = "autofocus" })
+                        @Html.ValidationMessageFor(m => m.StudentNumber, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        <div class="form-text">At least 6 characters, including a number.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Create account</button>
+                }
+
+                <hr />
+                <p class="mb-0">Already have an account? @Html.ActionLink("Log in", "Login")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

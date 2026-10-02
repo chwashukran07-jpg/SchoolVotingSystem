@@ -1,0 +1,48 @@
+@{
+    ViewBag.Title = "Home";
+}
+
+<main>
+    <section class="py-4 text-center">
+        <h1>Student Online Voting System</h1>
+        <p class="lead">
+            Only students on the official voter list can vote, and every Student ID can vote once per election.
+        </p>
+    </section>
+
+    @if (!Request.IsAuthenticated)
+    {
+        <div class="row justify-content-center g-4">
+            <div class="col-md-5">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h2 class="h4 card-title">I'm a Student</h2>
+                        <p class="card-text">Log in with your Student ID to see open elections and cast your vote.</p>
+                        @Html.ActionLink("Student login", "Login", "Account", null, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Create voter account", "Register", "Account", null, new { @class = "btn btn-outline-primary" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card h-100 shadow-sm border-dark">
+                    <div class="card-body">
+                        <h2 class="h4 card-title">Election Admin</h2>
+                        <p class="card-text">Create elections, manage candidates and the voter list, and view results.</p>
+                        @Html.ActionLink("Admin login", "AdminLogin", "Account", null, new { @class = "btn btn-dark" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (User.IsInRole("Admin"))
+    {
+        <p class="text-center">
+            @Html.ActionLink("Manage elections", "Index", "Admin", null, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Voter list", "Students", "Admin", null, new { @class = "btn btn-outline-dark" })
+        </p>
+    }
+    else
+    {
+        <p class="text-center">@Html.ActionLink("See open elections", "Index", "Vote", null, new { @class = "btn btn-primary btn-lg" })</p>
+    }
+</main>

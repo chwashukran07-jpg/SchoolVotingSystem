@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"C:\\\\Users\\\\HPPRO~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-HP-PRO-source-repos-WebApplication1-WebApplication1\\\\e9fe6a92-5e49-4499-8d9b-3e0beca9e4de\\\\scratchpad\\\\e2e.ps1\")",
+      "PowerShell(Get-Process *)"
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+@model IEnumerable<VotingSystem.Models.CandidateResult>
+@{
+    var election = ViewBag.Election as VotingSystem.Models.Election;
+    var blocked = (List<VotingSystem.Models.BlockedAttemptRow>)ViewBag.BlockedAttempts;
+    int eligible = (int)ViewBag.EligibleCount;
+    ViewBag.Title = "Results - " + election.Title;
+    int totalVotes = Model.Sum(r => r.Votes);
+    double turnout = eligible == 0 ? 0 : (totalVotes * 100.0 / eligible);
+}
+
+<h2>Results for @election.Title</h2>
+
+<div class="row g-3 my-3">
+    <div class="col-sm-4">
+        <div class="card text-center"><div class="card-body">
+            <div class="display-6">@totalVotes</div>
+            <div class="text-muted">votes cast</div>
+        </div></div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card text-center"><div class="card-body">
+            <div class="display-6">@turnout.ToString("0.0")%</div>
+            <div class="text-muted">turnout (@totalVotes of @eligible eligible students)</div>
+        </div></div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card text-center @(blocked.Count > 0 ? "border-warning" : "")"><div class="card-body">
+            <div class="display-6">@blocked.Count</div>
+            <div class="text-muted">double-vote attempts blocked</div>
+        </div></div>
+    </div>
+</div>
+
+<table class="table">
+    <tr>
+        <th>Candidate</th>
+        <th>Party</th>
+        <th>Votes</th>
+        <th style="width: 40%">%</th>
+    </tr>
+@foreach (var row in Model)
+{
+    double pct = totalVotes == 0 ? 0 : (row.Votes * 100.0 / totalVotes);
+    <tr>
+        <td>@row.Name</td>
+        <td>@row.Party</td>
+        <td>@row.Votes</td>
+        <td>
+            <div class="progress" role="progressbar" aria-valuenow="@pct.ToString("0")" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: @pct.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)%">@pct.ToString("0.0")%</div>
+            </div>
+        </td>
+    </tr>
+}
+</table>
+
+@if (blocked.Count > 0)
+{
+    <h3 class="h5 mt-4">Blocked double-vote attempts</h3>
+    <p class="small text-muted">These students had already voted and tried again. Their second attempt was not counted.</p>
+    <table class="table table-sm">
+        <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>When</th>
+        </tr>
+    @foreach (var a in blocked)
+    {
+        <tr>
+            <td><code>@a.StudentNumber</code></td>
+            <td>@a.FullName</td>
+            <td>@a.AttemptedAt.ToString("g")</td>
+        </tr>
+    }
+    </table>
+}
+
+@Html.ActionLink("Back to list", "Index")
